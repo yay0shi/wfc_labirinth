@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://c1qqfr5nhfsrr"]
+
+[ext_resource type="Script" uid="uid://y0sihmgkmuma" path="res://scripts/wfc_3d.gd" id="1_0i8fi"]
+[ext_resource type="Script" uid="uid://dly41kvw8c7ll" path="res://scripts/main.gd" id="1_h2yge"]
+[ext_resource type="Script" uid="uid://eyrds1vw2rmn" path="res://scripts/camera_controller.gd" id="2_y4k7k"]
+
+[node name="Node3D" type="Node3D"]
+script = ExtResource("1_h2yge")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+current = true
+script = ExtResource("2_y4k7k")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+
+[node name="WaveFunctionCollapse3D" type="Node3D" parent="."]
+script = ExtResource("1_0i8fi")
+metadata/_custom_type_script = "uid://y0sihmgkmuma"

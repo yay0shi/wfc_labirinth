@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://1htg3t486bxf"]
+
+[ext_resource type="Script" uid="uid://dirpwdd3iyq7w" path="res://scripts/dead_end_tile_w.gd" id="1_xjjj3"]
+
+[node name="Node3D" type="Node3D"]
+script = ExtResource("1_xjjj3")

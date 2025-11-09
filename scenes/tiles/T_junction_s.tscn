@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://8yn17oxayxqa"]
+
+[ext_resource type="Script" uid="uid://b3w2pegfb2xkv" path="res://scripts/t_junction_tile_s.gd" id="1_0letu"]
+
+[node name="Node3D" type="Node3D"]
+script = ExtResource("1_0letu")

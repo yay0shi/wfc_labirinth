@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://c28huh2fm7kn7"]
+
+[ext_resource type="Script" uid="uid://snv52eqsj37i" path="res://scripts/straight_tile_ew.gd" id="1_tmpli"]
+
+[node name="Node3D" type="Node3D"]
+script = ExtResource("1_tmpli")

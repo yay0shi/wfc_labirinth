@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://blx57a5qp7y2b"]
+
+[ext_resource type="Script" uid="uid://coeag15dqnidr" path="res://scripts/corner_tile_sw.gd" id="1_lhxon"]
+
+[node name="Node3D" type="Node3D"]
+script = ExtResource("1_lhxon")

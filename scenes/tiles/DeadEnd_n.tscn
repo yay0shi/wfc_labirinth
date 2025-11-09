@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bxul0i7iumpr2"]
+
+[ext_resource type="Script" uid="uid://crg22hpur3jvc" path="res://scripts/dead_end_tile_n.gd" id="1_lfr24"]
+
+[node name="Node3D" type="Node3D"]
+script = ExtResource("1_lfr24")

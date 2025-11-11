@@ -3,7 +3,7 @@ extends Node3D
 class_name WaveFunctionCollapse3D
 
 # Размер лабиринта
-@export var grid_size: Vector3i = Vector3i(8 , 1, 8)
+@export var grid_size: Vector3i = Vector3i(16 , 1, 16)
 
 # Ссылки на сцены тайлов
 var tile_scenes = {

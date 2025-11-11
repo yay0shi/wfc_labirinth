@@ -100,8 +100,6 @@ func initialize_tile_states_from_scenes():
 			})
 			
 			print("Добавлен тайл: ", tile_key, " - соединения: ", state_connections)
-		else:
-			print("ОШИБКА: Не удалось получить MazeTile для ", tile_key)
 		
 		# Удаляем инстанс
 		tile_instance.queue_free()
@@ -112,29 +110,7 @@ func initialize_tile_states_from_scenes():
 	
 	print("Создано состояний из сцен: ", all_possible_states.size())
 	
-	if all_possible_states.is_empty():
-		print("КРИТИЧЕСКАЯ ОШИБКА: Не удалось загрузить ни одного тайла!")
-		# Создаем fallback состояние
-		create_fallback_state()
-		return
-	
 	# Продолжаем инициализацию WFC
-	initialize_compatibility_matrix()
-	initialize_wave_function()
-	collapse_wave_function()
-	
-	is_initialized = true
-
-func create_fallback_state():
-	"""Создаем fallback состояние если не удалось загрузить тайлы"""
-	print("Создаем fallback состояние...")
-	
-	all_possible_states = [{
-		"type": "straight_ns",
-		"orientation": 0,
-		"connections": [true, true, false, false]  # north/south
-	}]
-	
 	initialize_compatibility_matrix()
 	initialize_wave_function()
 	collapse_wave_function()
@@ -207,11 +183,7 @@ func collapse_wave_function():
 		
 		# Находим ячейку с минимальной энтропией
 		var target_cell = find_min_entropy_cell()
-		
-		if target_cell == null:
-			print("Не удалось найти ячейку для коллапса на итерации ", iteration)
-			break
-		
+
 		# Коллапсируем ячейку
 		if not collapse_cell(target_cell):
 			print("Ошибка при коллапсе ячейки ", target_cell, " на итерации ", iteration)
@@ -226,7 +198,6 @@ func collapse_wave_function():
 	
 	# Финальная диагностика
 	print("Коллапсирование завершено за ", iteration, " итераций")
-	diagnose_wave_function()
 	
 	# Создаем визуальное представление
 	instantiate_maze()
@@ -272,10 +243,6 @@ func find_min_entropy_cell():
 func collapse_cell(cell_pos: Vector3i):
 	"""Коллапсируем ячейку - выбираем случайное состояние из возможных"""
 	var possibilities = wave_function[cell_pos.x][cell_pos.y][cell_pos.z]
-	
-	if possibilities.is_empty():
-		print("КРИТИЧЕСКАЯ ОШИБКА: Ячейка ", cell_pos, " не имеет возможных состояний!")
-		return false
 	
 	if possibilities.size() == 1:
 		# Ячейка уже коллапсирована
@@ -353,43 +320,6 @@ func update_neighbor_constraints(cell_pos: Vector3i, neighbor_pos: Vector3i, dir
 	
 	return false
 
-func diagnose_wave_function():
-	"""Детальная диагностика состояния волновой функции"""
-	print("=== ДИАГНОСТИКА WAVE FUNCTION ===")
-	
-	var stats = {
-		"collapsed": 0,      # 1 состояние
-		"uncollapsed": 0,    # >1 состояний
-		"contradiction": 0   # 0 состояний
-	}
-	
-	for x in range(grid_size.x):
-		for y in range(grid_size.y):
-			for z in range(grid_size.z):
-				var count = wave_function[x][y][z].size()
-				if count == 1:
-					stats["collapsed"] += 1
-				elif count > 1:
-					stats["uncollapsed"] += 1
-				else:
-					stats["contradiction"] += 1
-	
-	print("Статистика:")
-	print("  Коллапсировано: ", stats["collapsed"])
-	print("  Не коллапсировано: ", stats["uncollapsed"])
-	print("  Противоречий: ", stats["contradiction"])
-	
-	# Детальная информация о несвернутых ячейках
-	if stats["uncollapsed"] > 0:
-		print("Ячейки с множеством вариантов:")
-		for x in range(grid_size.x):
-			for y in range(grid_size.y):
-				for z in range(grid_size.z):
-					var count = wave_function[x][y][z].size()
-					if count > 1:
-						var pos = Vector3i(x, y, z)
-						print("  ", pos, ": ", count, " вариантов")
-
 func instantiate_maze():
 	"""Создаем визуальное представление лабиринта"""
 	print("=== СОЗДАЕМ ВИЗУАЛЬНОЕ ПРЕДСТАВЛЕНИЕ ===")
@@ -435,8 +365,6 @@ func instantiate_maze():
 						# Ориентация уже заложена в самом тайле, поэтому не поворачиваем
 						add_child(tile)
 						created_tiles += 1
-				else:
-					print("ОШИБКА: Неверный индекс состояния: ", state_index)
 	
 	print("Создано тайлов: ", created_tiles)
 	if forced_collapses > 0:

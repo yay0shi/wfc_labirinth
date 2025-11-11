@@ -19,29 +19,18 @@ var astar: AStar3D
 var path_positions: Array[Vector3i] = []
 
 func _ready():
-	# Ждем инициализации сцены
 	_setup_materials_manager()
-	await get_tree().create_timer(2.0).timeout  # Даем время на создание всех тайлов
+	await get_tree().create_timer(0.1).timeout  # Даем время на создание всех тайлов
 	generate_external_walls()
-	await get_tree().create_timer(2.0).timeout
+	await get_tree().create_timer(0.1).timeout
 	create_entrance_and_exit()
 	assign_tile_weights()
-	await get_tree().create_timer(2.0).timeout
+	await get_tree().create_timer(0.1).timeout
 	create_path_between_entrance_exit()
 
 func _setup_materials_manager():
 	"""Находим менеджер материалов разными способами"""
 	materials_manager = get_node_or_null("/root/MaterialsManager")
-	
-	if not materials_manager:
-		materials_manager = get_node_or_null("/root/Main/MaterialsManager")
-	
-	if not materials_manager:
-		print("Предупреждение: MaterialsManager не найден в passage_generator")
-		# Создаем временный менеджер
-		materials_manager = GameMaterialsManager.new()
-		if materials_manager.has_method("load_textures"):
-			materials_manager.load_textures()
 
 func generate_external_walls():
 	"""Генерирует внешние стены вокруг лабиринта только для проходов наружу"""
@@ -49,9 +38,6 @@ func generate_external_walls():
 	
 	# Получаем родительский узел WFC
 	var wfc_node = get_parent()
-	if not wfc_node or not wfc_node is WaveFunctionCollapse3D:
-		print("Ошибка: Не найден родительский узел WFC")
-		return
 	
 	# Получаем размер сетки из WFC
 	grid_size = wfc_node.grid_size
@@ -110,10 +96,6 @@ func create_entrance_and_exit():
 	# 3. Выбираем позиции для входа и выхода
 	var entrance_pos = _select_entrance_position(entrance_direction)
 	var exit_pos = _select_exit_position(exit_direction)
-	
-	if entrance_pos == null or exit_pos == null:
-		print("Ошибка: Не удалось выбрать позиции для входа/выхода")
-		return
 	
 	entrance_position = Vector3(entrance_pos.x * 4, 0, entrance_pos.z * 4)
 	exit_position = Vector3(exit_pos.x * 4, 0, exit_pos.z * 4)
@@ -340,7 +322,7 @@ func _check_needed_external_walls(grid_pos: Vector3i) -> Dictionary:
 	# Проверяем соединения тайла
 	var tile_connections = tile.connections
 	
-	# ВАЖНО: внешняя стена нужна там, где у тайла ЕСТЬ проход наружу (connection = true)
+	# ВАЖНО: внешняя стена нужна там, где у тайла ЕСТЬ проход наружу (connection = false)
 	# но при этом это граница лабиринта
 	
 	if is_north_edge and tile_connections.get("north", false):
@@ -489,10 +471,6 @@ func get_tile_weight(grid_pos: Vector3i) -> float:
 	var key = _grid_pos_to_key(grid_pos)
 	return tile_weights.get(key, 1.0)  # По умолчанию вес 1.0
 
-func get_all_tile_weights() -> Dictionary:
-	"""Возвращает все веса тайлов"""
-	return tile_weights.duplicate()
-
 func _world_to_grid_position(world_pos: Vector3) -> Vector3i:
 	"""Конвертирует мировые координаты в сеточные"""
 	return Vector3i(
@@ -583,10 +561,6 @@ func find_astar_path(start: Vector3i, end: Vector3i) -> Array[Vector3i]:
 	
 	var start_id = _grid_pos_to_id(start)
 	var end_id = _grid_pos_to_id(end)
-	
-	if not astar.has_point(start_id) or not astar.has_point(end_id):
-		print("Ошибка: начальная или конечная точка не найдена в графе")
-		return []
 	
 	# Ищем путь
 	var path_3d = astar.get_point_path(start_id, end_id)
